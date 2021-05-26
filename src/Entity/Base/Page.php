@@ -7,10 +7,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+//TODO: Uploadable
+
 /**
  * @ORM\Entity(repositoryClass=PageRepository::class)
  */
-class Page
+class Page extends Base
 {
     /**
      * @ORM\Id
@@ -45,18 +47,18 @@ class Page
     private $site;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Navigation::class, mappedBy="pages")
-     */
-    private $navigations;
-
-    /**
      * @ORM\ManyToOne(targetEntity=Template::class, inversedBy="pages")
      */
     private $template;
 
+    /**
+     * @ORM\OneToMany(targetEntity=NavigationPage::class, mappedBy="page")
+     */
+    private $navigationPages;
+
     public function __construct()
     {
-        $this->navigations = new ArrayCollection();
+        $this->navigationPages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -142,33 +144,6 @@ class Page
         return $this;
     }
 
-    /**
-     * @return Collection|Navigation[]
-     */
-    public function getNavigations(): Collection
-    {
-        return $this->navigations;
-    }
-
-    public function addNavigation(Navigation $navigation): self
-    {
-        if (!$this->navigations->contains($navigation)) {
-            $this->navigations[] = $navigation;
-            $navigation->addPage($this);
-        }
-
-        return $this;
-    }
-
-    public function removeNavigation(Navigation $navigation): self
-    {
-        if ($this->navigations->removeElement($navigation)) {
-            $navigation->removePage($this);
-        }
-
-        return $this;
-    }
-
     public function getTemplate(): ?Template
     {
         return $this->template;
@@ -177,6 +152,36 @@ class Page
     public function setTemplate(?Template $template): self
     {
         $this->template = $template;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|NavigationPage[]
+     */
+    public function getNavigationPages(): Collection
+    {
+        return $this->navigationPages;
+    }
+
+    public function addNavigationPage(NavigationPage $navigationPage): self
+    {
+        if (!$this->navigationPages->contains($navigationPage)) {
+            $this->navigationPages[] = $navigationPage;
+            $navigationPage->setPage($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNavigationPage(NavigationPage $navigationPage): self
+    {
+        if ($this->navigationPages->removeElement($navigationPage)) {
+            // set the owning side to null (unless already changed)
+            if ($navigationPage->getPage() === $this) {
+                $navigationPage->setPage(null);
+            }
+        }
 
         return $this;
     }

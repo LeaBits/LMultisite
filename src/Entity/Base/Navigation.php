@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=NavigationRepository::class)
  */
-class Navigation
+class Navigation extends Base
 {
     /**
      * @ORM\Id
@@ -30,13 +30,13 @@ class Navigation
     private $slug;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Page::class, inversedBy="navigations")
+     * @ORM\OneToMany(targetEntity=NavigationPage::class, mappedBy="navigation")
      */
-    private $pages;
+    private $navigationPages;
 
     public function __construct()
     {
-        $this->pages = new ArrayCollection();
+        $this->navigationPages = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -69,25 +69,31 @@ class Navigation
     }
 
     /**
-     * @return Collection|Page[]
+     * @return Collection|NavigationPage[]
      */
-    public function getPages(): Collection
+    public function getNavigationPages(): Collection
     {
-        return $this->pages;
+        return $this->navigationPages;
     }
 
-    public function addPage(Page $page): self
+    public function addNavigationPage(NavigationPage $navigationPage): self
     {
-        if (!$this->pages->contains($page)) {
-            $this->pages[] = $page;
+        if (!$this->navigationPages->contains($navigationPage)) {
+            $this->navigationPages[] = $navigationPage;
+            $navigationPage->setNavigation($this);
         }
 
         return $this;
     }
 
-    public function removePage(Page $page): self
+    public function removeNavigationPage(NavigationPage $navigationPage): self
     {
-        $this->pages->removeElement($page);
+        if ($this->navigationPages->removeElement($navigationPage)) {
+            // set the owning side to null (unless already changed)
+            if ($navigationPage->getNavigation() === $this) {
+                $navigationPage->setNavigation(null);
+            }
+        }
 
         return $this;
     }

@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * @ORM\Entity(repositoryClass=TemplateRepository::class)
  */
-class Template
+class Template extends Base
 {
     /**
      * @ORM\Id
