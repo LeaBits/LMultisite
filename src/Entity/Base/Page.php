@@ -1,0 +1,183 @@
+<?php
+
+namespace App\Entity\Base;
+
+use App\Repository\Base\PageRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity(repositoryClass=PageRepository::class)
+ */
+class Page
+{
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $title;
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $slug;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Page::class, inversedBy="children")
+     */
+    private $parent;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Page::class, mappedBy="parent")
+     */
+    private $children;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Site::class, inversedBy="pages")
+     */
+    private $site;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Navigation::class, mappedBy="pages")
+     */
+    private $navigations;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Template::class, inversedBy="pages")
+     */
+    private $template;
+
+    public function __construct()
+    {
+        $this->navigations = new ArrayCollection();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(string $title): self
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getParent(): ?self
+    {
+        return $this->parent;
+    }
+
+    public function setParent(?self $parent): self
+    {
+        $this->parent = $parent;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|self[]
+     */
+    public function getChildren(): Collection
+    {
+        return $this->children;
+    }
+
+    public function addChild(self $child): self
+    {
+        if (!$this->children->contains($child)) {
+            $this->children[] = $child;
+            $child->setParent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChild(self $child): self
+    {
+        if ($this->children->removeElement($child)) {
+            // set the owning side to null (unless already changed)
+            if ($child->getParent() === $this) {
+                $child->setParent(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getSite(): ?Site
+    {
+        return $this->site;
+    }
+
+    public function setSite(?Site $site): self
+    {
+        $this->site = $site;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Navigation[]
+     */
+    public function getNavigations(): Collection
+    {
+        return $this->navigations;
+    }
+
+    public function addNavigation(Navigation $navigation): self
+    {
+        if (!$this->navigations->contains($navigation)) {
+            $this->navigations[] = $navigation;
+            $navigation->addPage($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNavigation(Navigation $navigation): self
+    {
+        if ($this->navigations->removeElement($navigation)) {
+            $navigation->removePage($this);
+        }
+
+        return $this;
+    }
+
+    public function getTemplate(): ?Template
+    {
+        return $this->template;
+    }
+
+    public function setTemplate(?Template $template): self
+    {
+        $this->template = $template;
+
+        return $this;
+    }
+}
