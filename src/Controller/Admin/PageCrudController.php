@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Base\Page;
 use App\Entity\Base\Site;
+use App\Entity\Base\Template;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
@@ -23,6 +24,17 @@ class PageCrudController extends BaseCrudController
         yield $this->getSiteBadgeField();
         yield TextField::new('title');
         yield TextField::new('slug')
+            ->hideOnIndex();
+
+        $templates = $this->getDoctrine()
+            ->getRepository(Template::class)
+            ->createQueryBuilder('t')
+            ->orderBy('t.title', 'ASC')
+            ->getQuery()
+            ->getResult();
+        $templateField = AssociationField::new('template');
+        yield $templateField->setFormTypeOptions(["choices" => $templates])
+            ->setSortable(false)
             ->hideOnIndex();
     }
 }

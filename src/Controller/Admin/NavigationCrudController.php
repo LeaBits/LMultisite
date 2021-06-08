@@ -4,6 +4,8 @@ namespace App\Controller\Admin;
 
 use App\Entity\Base\Navigation;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class NavigationCrudController extends BaseCrudController
 {
@@ -12,5 +14,12 @@ class NavigationCrudController extends BaseCrudController
         return Navigation::class;
     }
 
-    // TODO: Navigation CRUD
+    public function configureFields(string $pageName): iterable
+    {
+        yield IdField::new('id')
+            ->onlyOnIndex();
+        yield TextField::new('title');
+        yield TextField::new('slug')
+            ->hideOnIndex();
+    }
 }

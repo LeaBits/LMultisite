@@ -39,10 +39,16 @@ class Template extends Base
      */
     private $blogPosts;
 
+    //TODO: save site
+
     public function __construct()
     {
         $this->pages = new ArrayCollection();
         $this->blogPosts = new ArrayCollection();
+    }
+
+    public function __toString(){
+        return $this->getTitle().' ('.$this->getUrl().')';
     }
 
     public function getId(): ?int

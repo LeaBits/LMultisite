@@ -2,6 +2,7 @@
 
 namespace App\Entity\Base;
 
+use App\Entity\Base\Traits\Content;
 use App\Repository\Base\PageRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -14,22 +15,9 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Page extends Base
 {
-    /**
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    use Content;
 
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $title;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $slug;
+    //TODO: content
 
     /**
      * @ORM\ManyToOne(targetEntity=Site::class, inversedBy="pages")
@@ -49,35 +37,6 @@ class Page extends Base
     public function __construct()
     {
         $this->navigationPages = new ArrayCollection();
-    }
-
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
-    public function getTitle(): ?string
-    {
-        return $this->title;
-    }
-
-    public function setTitle(string $title): self
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    public function getSlug(): ?string
-    {
-        return $this->slug;
-    }
-
-    public function setSlug(string $slug): self
-    {
-        $this->slug = $slug;
-
-        return $this;
     }
 
     public function getSite(): ?Site
