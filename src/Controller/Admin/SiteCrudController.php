@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Base\Site;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ColorField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
@@ -21,5 +22,10 @@ class SiteCrudController extends AbstractCrudController
             ->onlyOnIndex();
         yield TextField::new('title');
         yield ColorField::new('color');
+
+        yield DateField::new('createdAt')
+            ->onlyOnIndex();
+        yield DateField::new('updatedAt')
+            ->onlyOnIndex();
     }
 }

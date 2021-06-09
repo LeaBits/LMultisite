@@ -11,6 +11,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 
 class BaseCrudController extends AbstractCrudController
 {
+    //TODO: soft delete action
+
     protected $pageSize;
     protected $sort;
 

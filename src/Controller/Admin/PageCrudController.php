@@ -7,6 +7,7 @@ use App\Entity\Base\Site;
 use App\Entity\Base\Template;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
@@ -36,5 +37,10 @@ class PageCrudController extends BaseCrudController
         yield $templateField->setFormTypeOptions(["choices" => $templates])
             ->setSortable(false)
             ->hideOnIndex();
+
+        yield DateField::new('createdAt')
+            ->onlyOnIndex();
+        yield DateField::new('updatedAt')
+            ->onlyOnIndex();
     }
 }

@@ -8,16 +8,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-//TODO: Uploadable
-
 /**
  * @ORM\Entity(repositoryClass=BlogPostRepository::class)
  */
 class BlogPost extends Base
 {
     use Content;
-
-    //TODO: content
 
     /**
      * @ORM\ManyToOne(targetEntity=BlogCategory::class, inversedBy="blogPosts")
@@ -34,9 +30,15 @@ class BlogPost extends Base
      */
     private $template;
 
+    /**
+     * @ORM\OneToMany(targetEntity=BlogPostBlock::class, mappedBy="blogPost")
+     */
+    private $blogPostBlocks;
+
     public function __construct()
     {
         $this->blogTags = new ArrayCollection();
+        $this->blogPostBlocks = new ArrayCollection();
     }
 
     public function getBlogCategory(): ?BlogCategory
@@ -86,6 +88,36 @@ class BlogPost extends Base
     public function setTemplate(?Template $template): self
     {
         $this->template = $template;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|BlogPostBlock[]
+     */
+    public function getBlogPostBlocks(): Collection
+    {
+        return $this->blogPostBlocks;
+    }
+
+    public function addBlogPostBlock(BlogPostBlock $blogPostBlock): self
+    {
+        if (!$this->blogPostBlocks->contains($blogPostBlock)) {
+            $this->blogPostBlocks[] = $blogPostBlock;
+            $blogPostBlock->setBlogPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBlogPostBlock(BlogPostBlock $blogPostBlock): self
+    {
+        if ($this->blogPostBlocks->removeElement($blogPostBlock)) {
+            // set the owning side to null (unless already changed)
+            if ($blogPostBlock->getBlogPost() === $this) {
+                $blogPostBlock->setBlogPost(null);
+            }
+        }
 
         return $this;
     }

@@ -39,16 +39,25 @@ class Template extends Base
      */
     private $blogPosts;
 
-    //TODO: save site
+    /**
+     * @ORM\OneToMany(targetEntity=TemplateBlock::class, mappedBy="template")
+     */
+    private $templateBlocks;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Site::class, inversedBy="pages")
+     */
+    private $site;
 
     public function __construct()
     {
         $this->pages = new ArrayCollection();
         $this->blogPosts = new ArrayCollection();
+        $this->templateBlocks = new ArrayCollection();
     }
 
     public function __toString(){
-        return $this->getTitle().' ('.$this->getUrl().')';
+        return $this->site.': '.$this->getTitle().' ('.$this->getUrl().')';
     }
 
     public function getId(): ?int
@@ -136,6 +145,48 @@ class Template extends Base
                 $blogPost->setTemplate(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|TemplateBlock[]
+     */
+    public function getTemplateBlocks(): Collection
+    {
+        return $this->templateBlocks;
+    }
+
+    public function addTemplateBlock(TemplateBlock $templateBlock): self
+    {
+        if (!$this->templateBlocks->contains($templateBlock)) {
+            $this->templateBlocks[] = $templateBlock;
+            $templateBlock->setTemplate($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTemplateBlock(TemplateBlock $templateBlock): self
+    {
+        if ($this->templateBlocks->removeElement($templateBlock)) {
+            // set the owning side to null (unless already changed)
+            if ($templateBlock->getTemplate() === $this) {
+                $templateBlock->setTemplate(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getSite(): ?Site
+    {
+        return $this->site;
+    }
+
+    public function setSite(?Site $site): self
+    {
+        $this->site = $site;
 
         return $this;
     }

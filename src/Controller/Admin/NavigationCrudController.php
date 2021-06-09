@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Base\Navigation;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
@@ -21,5 +22,10 @@ class NavigationCrudController extends BaseCrudController
         yield TextField::new('title');
         yield TextField::new('slug')
             ->hideOnIndex();
+
+        yield DateField::new('createdAt')
+            ->onlyOnIndex();
+        yield DateField::new('updatedAt')
+            ->onlyOnIndex();
     }
 }

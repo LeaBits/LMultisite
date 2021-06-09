@@ -8,16 +8,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-//TODO: Uploadable
-
 /**
  * @ORM\Entity(repositoryClass=PageRepository::class)
  */
-class Page extends Base
+class Page extends ContentBlock
 {
     use Content;
-
-    //TODO: content
 
     /**
      * @ORM\ManyToOne(targetEntity=Site::class, inversedBy="pages")
@@ -34,9 +30,15 @@ class Page extends Base
      */
     private $navigationPages;
 
+    /**
+     * @ORM\OneToMany(targetEntity=PageBlock::class, mappedBy="page")
+     */
+    private $pageBlocks;
+
     public function __construct()
     {
         $this->navigationPages = new ArrayCollection();
+        $this->pageBlocks = new ArrayCollection();
     }
 
     public function getSite(): ?Site
@@ -87,6 +89,36 @@ class Page extends Base
             // set the owning side to null (unless already changed)
             if ($navigationPage->getPage() === $this) {
                 $navigationPage->setPage(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|PageBlock[]
+     */
+    public function getPageBlocks(): Collection
+    {
+        return $this->pageBlocks;
+    }
+
+    public function addPageBlock(PageBlock $pageBlock): self
+    {
+        if (!$this->pageBlocks->contains($pageBlock)) {
+            $this->pageBlocks[] = $pageBlock;
+            $pageBlock->setPage($this);
+        }
+
+        return $this;
+    }
+
+    public function removePageBlock(PageBlock $pageBlock): self
+    {
+        if ($this->pageBlocks->removeElement($pageBlock)) {
+            // set the owning side to null (unless already changed)
+            if ($pageBlock->getPage() === $this) {
+                $pageBlock->setPage(null);
             }
         }
 
