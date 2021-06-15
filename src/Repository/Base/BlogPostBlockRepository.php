@@ -2,6 +2,7 @@
 
 namespace App\Repository\Base;
 
+use App\Entity\Base\BlogPost;
 use App\Entity\Base\BlogPostBlock;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -19,32 +20,17 @@ class BlogPostBlockRepository extends ServiceEntityRepository
         parent::__construct($registry, BlogPostBlock::class);
     }
 
-    // /**
-    //  * @return BlogPostBlock[] Returns an array of BlogPostBlock objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param BlogPost $blogPost
+     * @return int|mixed|string
+     */
+    public function findByBlogPost(BlogPost $blogPost)
     {
-        return $this->createQueryBuilder('b')
-            ->andWhere('b.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('b.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.blogPost = :val')
+            ->setParameter('val', $blogPost->getId())
+            ->orderBy('a.title', 'ASC')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?BlogPostBlock
-    {
-        return $this->createQueryBuilder('b')
-            ->andWhere('b.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

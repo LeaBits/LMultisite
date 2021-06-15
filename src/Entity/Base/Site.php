@@ -39,10 +39,16 @@ class Site extends Base
      */
     private $pages;
 
+    /**
+     * @ORM\OneToMany(targetEntity=BlogPost::class, mappedBy="site")
+     */
+    private $blogPosts;
+
     public function __construct()
     {
         $this->siteHostnames = new ArrayCollection();
         $this->pages = new ArrayCollection();
+        $this->blogPosts = new ArrayCollection();
     }
 
     public function __toString(){
@@ -132,6 +138,36 @@ class Site extends Base
             // set the owning side to null (unless already changed)
             if ($page->getSite() === $this) {
                 $page->setSite(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|BlogPost[]
+     */
+    public function getBlogPosts(): Collection
+    {
+        return $this->blogPosts;
+    }
+
+    public function addBlogPost(BlogPost $blogPost): self
+    {
+        if (!$this->blogPosts->contains($blogPost)) {
+            $this->blogPosts[] = $blogPost;
+            $blogPost->setSite($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBlogPost(BlogPost $blogPost): self
+    {
+        if ($this->blogPosts->removeElement($blogPost)) {
+            // set the owning side to null (unless already changed)
+            if ($blogPost->getSite() === $this) {
+                $blogPost->setSite(null);
             }
         }
 

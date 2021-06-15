@@ -12,14 +12,5 @@ class BlogPostBlockCrudController extends AbstractCrudController
         return BlogPostBlock::class;
     }
 
-    /*
-    public function configureFields(string $pageName): iterable
-    {
-        return [
-            IdField::new('id'),
-            TextField::new('title'),
-            TextEditorField::new('description'),
-        ];
-    }
-    */
+    // TODO: Blog Post Block CRUD
 }

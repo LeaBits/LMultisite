@@ -2,6 +2,7 @@
 
 namespace App\Repository\Base;
 
+use App\Entity\Base\Template;
 use App\Entity\Base\TemplateBlock;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -19,32 +20,17 @@ class TemplateBlockRepository extends ServiceEntityRepository
         parent::__construct($registry, TemplateBlock::class);
     }
 
-    // /**
-    //  * @return TemplateBlock[] Returns an array of TemplateBlock objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param Template $template
+     * @return int|mixed|string
+     */
+    public function findByTemplate(Template $template)
     {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.template = :val')
+            ->setParameter('val', $template->getId())
+            ->orderBy('a.id', 'ASC')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?TemplateBlock
-    {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

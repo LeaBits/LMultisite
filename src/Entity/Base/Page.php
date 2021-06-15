@@ -35,6 +35,11 @@ class Page extends ContentBlock
      */
     private $pageBlocks;
 
+    /**
+     * @ORM\Column(type="boolean", options={"default" = 0})
+     */
+    private $isHome;
+
     public function __construct()
     {
         $this->navigationPages = new ArrayCollection();
@@ -121,6 +126,18 @@ class Page extends ContentBlock
                 $pageBlock->setPage(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getIsHome(): ?bool
+    {
+        return $this->isHome;
+    }
+
+    public function setIsHome(bool $isHome): self
+    {
+        $this->isHome = $isHome;
 
         return $this;
     }

@@ -3,6 +3,7 @@
 namespace App\Repository\Base;
 
 use App\Entity\Base\Navigation;
+use App\Entity\Base\Site;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,32 +20,18 @@ class NavigationRepository extends ServiceEntityRepository
         parent::__construct($registry, Navigation::class);
     }
 
-    // /**
-    //  * @return Navigation[] Returns an array of Navigation objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param Site $site
+     * @return int|mixed|string
+     */
+    public function findBySite(Site $site)
     {
-        return $this->createQueryBuilder('n')
-            ->andWhere('n.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('n.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.site = :val')
+            ->andWhere('a.isPublished = true')
+            ->setParameter('val', $site->getId())
+            ->orderBy('a.title', 'ASC')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Navigation
-    {
-        return $this->createQueryBuilder('n')
-            ->andWhere('n.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

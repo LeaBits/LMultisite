@@ -3,6 +3,7 @@
 namespace App\Repository\Base;
 
 use App\Entity\Base\BlogCategory;
+use App\Entity\Base\Site;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,32 +20,18 @@ class BlogCategoryRepository extends ServiceEntityRepository
         parent::__construct($registry, BlogCategory::class);
     }
 
-    // /**
-    //  * @return BlogCategory[] Returns an array of BlogCategory objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param Site $site
+     * @return int|mixed|string
+     */
+    public function findBySite(Site $site)
     {
-        return $this->createQueryBuilder('b')
-            ->andWhere('b.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('b.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.site = :val')
+            ->andWhere('a.isPublished = true')
+            ->setParameter('val', $site->getId())
+            ->orderBy('a.title', 'ASC')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?BlogCategory
-    {
-        return $this->createQueryBuilder('b')
-            ->andWhere('b.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

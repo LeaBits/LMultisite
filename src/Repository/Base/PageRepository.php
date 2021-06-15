@@ -2,7 +2,9 @@
 
 namespace App\Repository\Base;
 
+use App\Entity\Base\Navigation;
 use App\Entity\Base\Page;
+use App\Entity\Base\Site;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -19,32 +21,35 @@ class PageRepository extends ServiceEntityRepository
         parent::__construct($registry, Page::class);
     }
 
-    // /**
-    //  * @return Page[] Returns an array of Page objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param Site $site
+     * @return int|mixed|string
+     */
+    public function findBySite(Site $site)
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.site = :val')
+            ->andWhere('a.isPublished = true')
+            ->setParameter('val', $site->getId())
+            ->orderBy('a.title', 'ASC')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Page
+    /**
+     * @param Navigation $navigation
+     * @return int|mixed|string
+     */
+    public function findByNavigation(Navigation $navigation)
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
+        return $this->createQueryBuilder('a, np, n')
+            ->innerJoin('a.navigationPages', 'np')
+            ->innerJoin('np.navigation', 'n')
+            ->andWhere('n.id = :val')
+            ->andWhere('a.isPublished = true')
+            ->setParameter('val', $navigation->getId())
+            ->orderBy('a.title', 'ASC')
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getResult();
     }
-    */
 }

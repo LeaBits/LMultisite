@@ -34,6 +34,11 @@ class Navigation extends Base
      */
     private $navigationPages;
 
+    //TODO: save site
+    //TODO: navigation blog category
+    //TODO: navigation blog tag
+    //TODO: navigation external
+
     public function __construct()
     {
         $this->navigationPages = new ArrayCollection();

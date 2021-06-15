@@ -12,8 +12,5 @@ class PageBlockCrudController extends AbstractCrudController
         return PageBlock::class;
     }
 
-    public function configureFields(string $pageName): iterable
-    {
-
-    }
+    //TODO: Page Block CRUD
 }

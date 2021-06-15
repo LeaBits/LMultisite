@@ -19,32 +19,18 @@ class BlogTagRepository extends ServiceEntityRepository
         parent::__construct($registry, BlogTag::class);
     }
 
-    // /**
-    //  * @return BlogTag[] Returns an array of BlogTag objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param Site $site
+     * @return int|mixed|string
+     */
+    public function findBySite(Site $site)
     {
-        return $this->createQueryBuilder('b')
-            ->andWhere('b.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('b.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.site = :val')
+            ->andWhere('a.isPublished = true')
+            ->setParameter('val', $site->getId())
+            ->orderBy('a.title', 'ASC')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?BlogTag
-    {
-        return $this->createQueryBuilder('b')
-            ->andWhere('b.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

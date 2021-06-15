@@ -2,6 +2,7 @@
 
 namespace App\Repository\Base;
 
+use App\Entity\Base\Page;
 use App\Entity\Base\PageBlock;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -19,32 +20,18 @@ class PageBlockRepository extends ServiceEntityRepository
         parent::__construct($registry, PageBlock::class);
     }
 
-    // /**
-    //  * @return PageBlock[] Returns an array of PageBlock objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param Page $page
+     * @return int|mixed|string
+     */
+    public function findByPage(Page $page)
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('a')
+            ->andWhere('a.site = :val')
+            ->andWhere('a.isPublished = true')
+            ->setParameter('val', $page->getId())
+            ->orderBy('a.id', 'ASC')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?PageBlock
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

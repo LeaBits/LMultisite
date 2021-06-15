@@ -35,6 +35,11 @@ class BlogPost extends Base
      */
     private $blogPostBlocks;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Site::class, inversedBy="blogPosts")
+     */
+    private $site;
+
     public function __construct()
     {
         $this->blogTags = new ArrayCollection();
@@ -118,6 +123,18 @@ class BlogPost extends Base
                 $blogPostBlock->setBlogPost(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSite(): ?Site
+    {
+        return $this->site;
+    }
+
+    public function setSite(?Site $site): self
+    {
+        $this->site = $site;
 
         return $this;
     }

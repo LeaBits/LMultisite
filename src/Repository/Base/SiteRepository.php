@@ -4,6 +4,7 @@ namespace App\Repository\Base;
 
 use App\Entity\Base\Site;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -19,32 +20,22 @@ class SiteRepository extends ServiceEntityRepository
         parent::__construct($registry, Site::class);
     }
 
-    // /**
-    //  * @return Site[] Returns an array of Site objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param $hostname
+     * @return Site|null
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findOneByHostname($hostname): ?Site
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        $entityManager = $this->getEntityManager();
+        $query = $entityManager->createQuery(
+            'SELECT s, h
+            FROM App\Entity\Base\Site s
+            INNER JOIN s.siteHostnames h
+            WHERE h.url = :value
+            AND s.isPublished = true
+            AND h.isPublished = true'
+        )->setParameter('value', $hostname);
+        return $query->getOneOrNullResult();
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?Site
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }
