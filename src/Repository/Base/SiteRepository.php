@@ -3,6 +3,7 @@
 namespace App\Repository\Base;
 
 use App\Entity\Base\Site;
+use App\Exception\Base\MisplacedException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
@@ -21,21 +22,27 @@ class SiteRepository extends ServiceEntityRepository
     }
 
     /**
-     * @param $hostname
-     * @return Site|null
+     * @param string $hostname
+     * @return Site
+     * @throws MisplacedException
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function findOneByHostname($hostname): ?Site
+    public function findOneByHostname(string $hostname): Site
     {
         $entityManager = $this->getEntityManager();
-        $query = $entityManager->createQuery(
+        $data = $entityManager->createQuery(
             'SELECT s, h
             FROM App\Entity\Base\Site s
             INNER JOIN s.siteHostnames h
             WHERE h.url = :value
             AND s.isPublished = true
             AND h.isPublished = true'
-        )->setParameter('value', $hostname);
-        return $query->getOneOrNullResult();
+        )
+            ->setParameter('value', $hostname)
+            ->getOneOrNullResult();
+        if($data == null){
+            throw new MisplacedException('Missing site');
+        }
+        return $data;
     }
 }

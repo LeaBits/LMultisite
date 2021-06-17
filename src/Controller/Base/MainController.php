@@ -2,6 +2,7 @@
 
 namespace App\Controller\Base;
 
+use App\Entity\Base\Page;
 use App\Entity\Base\Site;
 use App\Exception\Base\MisplacedException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,22 +19,16 @@ class MainController extends AbstractController
      */
     private function getCurrentSite($host): Site
     {
-        $site = $this->getDoctrine()
+        return $this->getDoctrine()
             ->getRepository(Site::class)
             ->findOneByHostname($host);
-        if($site == null){
-            throw new MisplacedException('Missing site.');
-        }
-        return $site;
     }
 
     /**
      * @return Response
      */
     private function catch404(){
-        return $this->render('base/main/index.html.twig', [
-            'controller_name' => 'MainController',
-        ]);
+        return $this->render('404.html.twig', []);
     }
 
     /**
@@ -55,10 +50,10 @@ class MainController extends AbstractController
             //TODO: get blogposts by path
             //TODO: get blogpost blocks by blogpost
 
-            return $this->render('base/main/index.html.twig', [
-                'controller_name' => 'MainController',
-            ]);
-        }catch(MisplacedException $e){
+//            return $this->render('base/main/index.html.twig', [
+//                'controller_name' => 'MainController',
+//            ]);
+        }catch(\Exception $e){
             dump($e->getMessage());
             return $this->catch404();
         }
@@ -85,10 +80,10 @@ class MainController extends AbstractController
             //TODO: get blogposts by category
             //TODO: get blogpost blocks by blogpost
 
-            return $this->render('base/main/index.html.twig', [
-                'controller_name' => 'MainController',
-            ]);
-        }catch(MisplacedException $e){
+//            return $this->render('base/main/index.html.twig', [
+//                'controller_name' => 'MainController',
+//            ]);
+        }catch(\Exception $e){
             dump($e->getMessage());
             return $this->catch404();
         }
@@ -115,10 +110,10 @@ class MainController extends AbstractController
             //TODO: get blogposts by tag
             //TODO: get blogpost blocks by blogpost
 
-            return $this->render('base/main/index.html.twig', [
-                'controller_name' => 'MainController',
-            ]);
-        }catch(MisplacedException $e){
+//            return $this->render('base/main/index.html.twig', [
+//                'controller_name' => 'MainController',
+//            ]);
+        }catch(\Exception $e){
             dump($e->getMessage());
             return $this->catch404();
         }
@@ -137,17 +132,27 @@ class MainController extends AbstractController
     {
         try {
             $site = $this->getCurrentSite($host);
-            dump($site);
+            //dump($site);
 
             // pages
-            //TODO: get page by site and path
-            //TODO: get template of page
-            //TODO: get page blocks
+            $page = $this->getDoctrine()
+                ->getRepository(Page::class)
+                ->findOneByPath($path, $site);
+            dump($page);
+            $template = $page->getTemplate();
+            dump($template);
+            $blocks = $page->getPageBlocks();
+            dump($blocks);
 
-            return $this->render('base/main/index.html.twig', [
-                'controller_name' => 'MainController',
-            ]);
-        }catch(MisplacedException $e){
+            $responseParameters = array();
+            $responseParameters['title'] = $page->getTitle();
+            foreach($blocks as $block){
+                $responseParameters[$block->getTemplateBlock()->getSlug()] = $block->getContent();
+            }
+            dump($responseParameters);
+            return $this->render($template->getUrl(), $responseParameters);
+//            return $this->render('base/main/index.html.twig', $responseParameters);
+        }catch(\Exception $e){
             dump($e->getMessage());
             return $this->catch404();
         }

@@ -4,6 +4,7 @@ namespace App\Repository\Base;
 
 use App\Entity\Base\Template;
 use App\Entity\Base\TemplateBlock;
+use App\Exception\Base\MisplacedException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -22,15 +23,20 @@ class TemplateBlockRepository extends ServiceEntityRepository
 
     /**
      * @param Template $template
-     * @return int|mixed|string
+     * @return array
+     * @throws MisplacedException
      */
-    public function findByTemplate(Template $template)
+    public function findByTemplate(Template $template): array
     {
-        return $this->createQueryBuilder('a')
+        $data = $this->createQueryBuilder('a')
             ->andWhere('a.template = :val')
             ->setParameter('val', $template->getId())
             ->orderBy('a.id', 'ASC')
             ->getQuery()
-            ->getResult();
+            ->getArrayResult();
+        if(!is_array($data) || count($data) == 0){
+            throw new MisplacedException('Missing template blocks');
+        }
+        return $data;
     }
 }

@@ -39,6 +39,16 @@ class TemplateBlock
         $this->pageBlocks = new ArrayCollection();
     }
 
+    public function __toString(){
+        $site = '';
+        $template = '';
+        if(!empty($this->getTemplate())) {
+            $site = (!empty($this->getTemplate()->getSite()) ? $this->getTemplate()->getSite()->getTitle() . ': ' : '');
+            $template = $this->getTemplate()->getTitle().' - ';
+        }
+        return $site.$template.$this->getSlug();
+    }
+
     public function getId(): ?int
     {
         return $this->id;

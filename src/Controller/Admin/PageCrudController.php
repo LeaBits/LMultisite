@@ -26,6 +26,8 @@ class PageCrudController extends BaseCrudController
         yield $this->getSiteBadgeField();
         yield BooleanField::new('is_published')
             ->renderAsSwitch(false);
+        yield BooleanField::new('is_home')
+            ->renderAsSwitch(false);
         yield TextField::new('title');
         yield TextField::new('slug')
             ->hideOnIndex();

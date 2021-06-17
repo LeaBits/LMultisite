@@ -46,6 +46,11 @@ class Page extends ContentBlock
         $this->pageBlocks = new ArrayCollection();
     }
 
+    public function __toString(){
+        return (!empty($this->site)? $this->site->getTitle().': ' : '')
+            .$this->getTitle();
+    }
+
     public function getSite(): ?Site
     {
         return $this->site;

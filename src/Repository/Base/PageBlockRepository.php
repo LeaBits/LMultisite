@@ -4,6 +4,7 @@ namespace App\Repository\Base;
 
 use App\Entity\Base\Page;
 use App\Entity\Base\PageBlock;
+use App\Exception\Base\MisplacedException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -22,16 +23,21 @@ class PageBlockRepository extends ServiceEntityRepository
 
     /**
      * @param Page $page
-     * @return int|mixed|string
+     * @return array
+     * @throws MisplacedException
      */
-    public function findByPage(Page $page)
+    public function findByPage(Page $page): array
     {
-        return $this->createQueryBuilder('a')
+        $data = $this->createQueryBuilder('a')
             ->andWhere('a.site = :val')
             ->andWhere('a.isPublished = true')
             ->setParameter('val', $page->getId())
             ->orderBy('a.id', 'ASC')
             ->getQuery()
-            ->getResult();
+            ->getArrayResult();
+        if(!is_array($data) || count($data) == 0){
+            throw new MisplacedException('Missing page blocks');
+        }
+        return $data;
     }
 }

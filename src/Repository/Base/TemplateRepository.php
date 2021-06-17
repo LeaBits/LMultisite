@@ -4,6 +4,7 @@ namespace App\Repository\Base;
 
 use App\Entity\Base\Site;
 use App\Entity\Base\Template;
+use App\Exception\Base\MisplacedException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -22,16 +23,21 @@ class TemplateRepository extends ServiceEntityRepository
 
     /**
      * @param Site $site
-     * @return int|mixed|string
+     * @return array
+     * @throws MisplacedException
      */
-    public function findBySite(Site $site)
+    public function findBySite(Site $site): array
     {
-        return $this->createQueryBuilder('a')
+        $data = $this->createQueryBuilder('a')
             ->andWhere('a.site = :val')
             ->andWhere('a.isPublished = true')
             ->setParameter('val', $site->getId())
             ->orderBy('a.title', 'ASC')
             ->getQuery()
-            ->getResult();
+            ->getArrayResult();
+        if(!is_array($data) || count($data) == 0){
+            throw new MisplacedException('Missing template');
+        }
+        return $data;
     }
 }

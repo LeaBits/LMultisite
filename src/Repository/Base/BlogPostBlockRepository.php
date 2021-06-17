@@ -4,6 +4,7 @@ namespace App\Repository\Base;
 
 use App\Entity\Base\BlogPost;
 use App\Entity\Base\BlogPostBlock;
+use App\Exception\Base\MisplacedException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -22,15 +23,20 @@ class BlogPostBlockRepository extends ServiceEntityRepository
 
     /**
      * @param BlogPost $blogPost
-     * @return int|mixed|string
+     * @return array
+     * @throws MisplacedException
      */
-    public function findByBlogPost(BlogPost $blogPost)
+    public function findByBlogPost(BlogPost $blogPost): array
     {
-        return $this->createQueryBuilder('a')
+        $data = $this->createQueryBuilder('a')
             ->andWhere('a.blogPost = :val')
             ->setParameter('val', $blogPost->getId())
             ->orderBy('a.title', 'ASC')
             ->getQuery()
-            ->getResult();
+            ->getArrayResult();
+        if(!is_array($data) || count($data) == 0){
+            throw new MisplacedException('Missing blog post blocks');
+        }
+        return $data;
     }
 }
