@@ -32,6 +32,13 @@ class MainController extends AbstractController
     }
 
     /**
+     * @return Response
+     */
+    private function catchOtherError(){
+        return $this->render('error.html.twig', []);
+    }
+
+    /**
      * @Route(
      *     name="catchAllBlogPost",
      *     host="{host}",
@@ -132,29 +139,26 @@ class MainController extends AbstractController
     {
         try {
             $site = $this->getCurrentSite($host);
-            //dump($site);
 
             // pages
             $page = $this->getDoctrine()
                 ->getRepository(Page::class)
                 ->findOneByPath($path, $site);
-            dump($page);
             $template = $page->getTemplate();
-            dump($template);
             $blocks = $page->getPageBlocks();
-            dump($blocks);
 
             $responseParameters = array();
             $responseParameters['title'] = $page->getTitle();
             foreach($blocks as $block){
                 $responseParameters[$block->getTemplateBlock()->getSlug()] = $block->getContent();
             }
-            dump($responseParameters);
             return $this->render($template->getUrl(), $responseParameters);
-//            return $this->render('base/main/index.html.twig', $responseParameters);
-        }catch(\Exception $e){
-            dump($e->getMessage());
+        }catch(MisplacedException $e){
+//            dump($e);
             return $this->catch404();
+        }catch(\Exception $e){
+//            dump($e);
+            return $this->catchOtherError();
         }
     }
 }
