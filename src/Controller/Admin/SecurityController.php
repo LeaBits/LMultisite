@@ -29,7 +29,7 @@ class SecurityController extends AbstractController
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
+        return $this->render('admin/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
     }
 
     /**
@@ -70,8 +70,8 @@ class SecurityController extends AbstractController
                 'main' // firewall name in security.yaml
             );
         }
-
-        return $this->render('registration/register.html.twig', [
+        
+        return $this->render('admin/register.html.twig', [
             'registrationForm' => $form->createView(),
         ]);
     }
