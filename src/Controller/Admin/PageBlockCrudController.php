@@ -10,6 +10,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 
 class PageBlockCrudController extends AbstractCrudController
 {
@@ -45,7 +46,7 @@ class PageBlockCrudController extends AbstractCrudController
         yield $templateBlockField->setFormTypeOptions(["choices" => $templateBlocks])
             ->setSortable(false);
 
-        yield TextareaField::new('content')
+        yield TextEditorField::new('content')
             ->hideOnIndex();
     }
 }

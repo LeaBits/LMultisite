@@ -44,11 +44,20 @@ class BlogPostRepository extends ServiceEntityRepository
     /**
      * @param string $path
      * @param Site $site
+     * @param int $year
+     * @param int $month
+     * @param int $day
      * @return BlogPost
      * @throws MisplacedException
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function findOneByPath(string $path, Site $site): BlogPost
+    public function findOneByPath(
+        string $path,
+        Site $site,
+        int $year,
+        int $month,
+        int $day
+    ): BlogPost
     {
         $data = $this->createQueryBuilder('a')
             ->andWhere('a.site = :site')
@@ -58,7 +67,12 @@ class BlogPostRepository extends ServiceEntityRepository
             ->setParameter('val', $path)
             ->getQuery()
             ->getOneOrNullResult();
-        if($data == null){
+        if(
+            $data == null ||
+            $data->getCreatedAtYear() != $year ||
+            $data->getCreatedAtMonth() != $month ||
+            $data->getCreatedAtDay() != $day
+        ){
             throw new MisplacedException('Missing blog post');
         }
         return $data;

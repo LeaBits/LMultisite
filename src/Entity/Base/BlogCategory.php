@@ -39,6 +39,10 @@ class BlogCategory extends Base
         $this->blogPosts = new ArrayCollection();
     }
 
+    public function __toString(){
+        return $this->getTitle();
+    }
+
     public function getId(): ?int
     {
         return $this->id;

@@ -3,5 +3,7 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-    {{ main | raw }}
+    {% if main is defined %}
+        {{ main | raw }}
+    {% endif %}
 {% endblock %}

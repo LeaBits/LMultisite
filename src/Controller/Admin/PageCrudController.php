@@ -45,15 +45,13 @@ class PageCrudController extends BaseCrudController
             ->setSortable(false)
             ->hideOnIndex();
 
-        $uploadPath = $this->getParameter('path.featured.images');
-        $uploadPublicPath = $this->getParameter('path.public.featured.images');
         yield ImageField::new('featuredImage')
-            ->setBasePath($uploadPath)
-            ->setUploadDir($uploadPublicPath)
+            ->setBasePath($this->getFeaturedImagePath())
+            ->setUploadDir($this->getFeaturedImagePublicPath())
             ->hideOnForm();
         yield ImageField::new('featuredImage')
-            ->setBasePath($uploadPath)
-            ->setUploadDir($uploadPublicPath)
+            ->setBasePath($this->getFeaturedImagePath())
+            ->setUploadDir($this->getFeaturedImagePublicPath())
             ->onlyOnForms();
 
         yield DateField::new('createdAt')

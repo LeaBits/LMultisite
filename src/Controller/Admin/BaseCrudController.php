@@ -46,6 +46,16 @@ class BaseCrudController extends AbstractCrudController
             ->setSortable(false);
     }
 
+    protected function getFeaturedImagePath(): string
+    {
+            return $this->getParameter('path.featured.images');
+    }
+
+    protected function getFeaturedImagePublicPath(): string
+    {
+        return $this->getParameter('path.public.featured.images');
+    }
+
     public function configureCrud(Crud $crud): Crud
     {
         return $crud

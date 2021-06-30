@@ -48,6 +48,28 @@ class BlogPost extends Base
         $this->blogPostBlocks = new ArrayCollection();
     }
 
+    public function __toString(){
+        return (!empty($this->site)? $this->site->getTitle().': ' : '')
+            .$this->getTitle();
+    }
+
+    public function getCreatedAtYear():string {
+        return $this->getCreatedAt()->format('Y');
+    }
+    public function getCreatedAtMonth():string {
+        return $this->getCreatedAt()->format('n');
+    }
+    public function getCreatedAtDay():string {
+        return $this->getCreatedAt()->format('j');
+    }
+
+    public function getPath(){
+        return $this->getCreatedAtYear().'/'
+            .$this->getCreatedAtMonth().'/'
+            .$this->getCreatedAtDay().'/'
+            .$this->getSlug();
+    }
+
     public function getBlogCategory(): ?BlogCategory
     {
         return $this->blogCategory;

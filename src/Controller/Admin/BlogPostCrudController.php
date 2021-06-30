@@ -2,13 +2,16 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Base\BlogCategory;
 use App\Entity\Base\BlogPost;
+use App\Entity\Base\BlogTag;
 use App\Entity\Base\Template;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class BlogPostCrudController extends BaseCrudController
@@ -24,7 +27,6 @@ class BlogPostCrudController extends BaseCrudController
         return BlogPost::class;
     }
 
-    // TODO: Blog Post CRUD
     public function configureFields(string $pageName): iterable
     {
         yield IdField::new('id')
@@ -47,8 +49,33 @@ class BlogPostCrudController extends BaseCrudController
             ->setSortable(false)
             ->hideOnIndex();
 
-        //TODO: categories
-        //TODO: tags
+        $categories = $this->getDoctrine()
+            ->getRepository(BlogCategory::class)
+            ->createQueryBuilder('c')
+            ->orderBy('c.title', 'ASC')
+            ->getQuery()
+            ->getResult();
+        $categoryField = AssociationField::new('blogCategory');
+        yield $categoryField->setFormTypeOptions(["choices" => $categories]);
+
+        //TODO: tags (manytomany) not saved
+//        $tags = $this->getDoctrine()
+//            ->getRepository(BlogTag::class)
+//            ->createQueryBuilder('c')
+//            ->orderBy('c.title', 'ASC')
+//            ->getQuery()
+//            ->getResult();
+//        $tagField = AssociationField::new('blogTags');
+//        yield $tagField->setFormTypeOptions(["choices" => $tags]);
+
+        yield ImageField::new('featuredImage')
+            ->setBasePath($this->getFeaturedImagePath())
+            ->setUploadDir($this->getFeaturedImagePublicPath())
+            ->hideOnForm();
+        yield ImageField::new('featuredImage')
+            ->setBasePath($this->getFeaturedImagePath())
+            ->setUploadDir($this->getFeaturedImagePublicPath())
+            ->onlyOnForms();
 
         yield DateField::new('createdAt')
             ->onlyOnIndex();
