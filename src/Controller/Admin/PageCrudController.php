@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Controller\Admin\Field\VichImageField;
 use App\Entity\Base\Page;
 use App\Entity\Base\Site;
 use App\Entity\Base\Template;
@@ -10,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class PageCrudController extends BaseCrudController
@@ -42,6 +44,17 @@ class PageCrudController extends BaseCrudController
         yield $templateField->setFormTypeOptions(["choices" => $templates])
             ->setSortable(false)
             ->hideOnIndex();
+
+        $uploadPath = $this->getParameter('path.featured.images');
+        $uploadPublicPath = $this->getParameter('path.public.featured.images');
+        yield ImageField::new('featuredImage')
+            ->setBasePath($uploadPath)
+            ->setUploadDir($uploadPublicPath)
+            ->hideOnForm();
+        yield ImageField::new('featuredImage')
+            ->setBasePath($uploadPath)
+            ->setUploadDir($uploadPublicPath)
+            ->onlyOnForms();
 
         yield DateField::new('createdAt')
             ->onlyOnIndex();

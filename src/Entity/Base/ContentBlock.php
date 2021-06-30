@@ -13,8 +13,7 @@ class ContentBlock extends Base
      */
     protected $templateBlock;
 
-    //TODO: featured image
-
+    //TODO: CKEditor
     /**
      * @ORM\Column(type="text", nullable=true)
      */

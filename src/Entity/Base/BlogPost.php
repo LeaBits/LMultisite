@@ -7,9 +7,11 @@ use App\Repository\Base\BlogPostRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity(repositoryClass=BlogPostRepository::class)
+ * @Vich\Uploadable
  */
 class BlogPost extends Base
 {
