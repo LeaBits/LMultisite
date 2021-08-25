@@ -13,7 +13,7 @@ class ContentBlock extends Base
      */
     protected $templateBlock;
 
-    //TODO: CKEditor
+    //TODO: better text editor?
     /**
      * @ORM\Column(type="text", nullable=true)
      */

@@ -41,6 +41,8 @@ class DashboardController extends AbstractDashboardController
     public function configureMenuItems(): iterable
     {
         yield MenuItem::linktoDashboard('Dashboard', 'fas fa-paper-plane');
+        yield MenuItem::linkToUrl('Pastime dashboard', 'fas fa-mug-hot', '../admin/pastime')
+            ->setPermission('ROLE_ADMIN');
 
         yield MenuItem::section('Base');
         yield MenuItem::linkToCrud('Sites', 'fa fa-home', Site::class);
